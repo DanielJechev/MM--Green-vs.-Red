@@ -1,0 +1,57 @@
+package com.company;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import static com.company.Matrix.copy;
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        int[] input = Arrays.stream(reader.readLine().split("\\s+")).mapToInt(Integer::parseInt).toArray();
+            int row=input[0];
+            int col=input[1];
+
+            Matrix matrix = new Matrix(row, col);
+
+            for (int i = 0; i < row; i++) {
+                String lines=reader.readLine();
+                if (lines.contains("2")||lines.contains("3")||lines.contains("4")||lines.contains("5")
+                        ||lines.contains("6")||lines.contains("7")||lines.contains("8")||lines.contains("9") ){
+                    System.out.println();
+                    System.out.println("Incorrect input!\n" +
+                            "Cells must be - 1 or 0.");
+                    return;
+                }else {
+                    matrix.setCell( i,lines);
+                }
+            }
+
+            System.out.println(matrix.toString());
+
+        int[] elements = Arrays.stream(reader.readLine().split(". ")).mapToInt(Integer::parseInt).toArray();
+            int x1 = elements[0];
+            int y1 = elements[1];
+            int passes = elements[2];
+
+            int count = 0;
+            Matrix lastGen = copy(matrix);
+
+        while (passes>0){
+                Matrix nextGen= copy(lastGen);
+                for (int i = 0; i < lastGen.getRow(); i++) {
+                    for (int j = 0; j < lastGen.getCol(); j++) {
+                        nextGen.getNewValue(i, j, lastGen.rulesOfTheGame(i, j));
+                    }
+                }
+            lastGen = nextGen;
+            if ((nextGen.isGreen(nextGen.matrix[x1][y1]))) {
+                count++;
+            }
+            System.out.println(nextGen.toString());
+            passes--;
+        }
+        System.out.println("It will be "+count+" times green.");
+    }
+}

@@ -1,0 +1,175 @@
+package com.company;
+import java.util.*;
+
+public class Matrix {
+    protected int row;
+    protected int col;
+    protected int[][] matrix;
+
+    public Matrix(int row, int col) {
+        this.row = row;
+        this.col = col;
+        this.matrix = new int[row][col];
+    }
+
+    public void setCell(int cellNum, String input) {
+        char[] ch = new char[input.length()];
+        for (int i = 0; i < input.length(); i++) {
+            ch[i] = input.charAt(i);
+        }
+
+        for (int i = 0; i < ch.length; i++) {
+            matrix[cellNum][i] = Integer.parseInt(String.valueOf(ch[i]));
+        }
+    }
+
+    private  Matrix (int[][] m) {
+        this.row = m.length;
+        this.col = m[0].length;
+        this.matrix = m;
+    }
+
+    public static   Matrix copy(Matrix m) {
+        int [][] copyFrom= Arrays.stream(m.getMatrix()).map(int[]::clone).toArray(int[][]::new);
+
+        return  new Matrix(copyFrom);
+    }
+
+    public int getNewValue(int x, int y, int value) {
+        return this.matrix[x][y]=value;
+    }
+
+    public int rulesOfTheGame(int x, int y) {
+       if (isGreen(this.matrix[x][y])) {
+            int sum = getSumOfNeighbours(x, y);
+            if (sum != 2 && sum != 3 && sum != 6) {
+                return 0;
+            }
+        } else if (isRed(this.matrix[x][y])) {
+           int sum = getSumOfNeighbours(x, y);
+           if (sum == 3 || sum == 6) {
+               return 1;
+           }
+       }
+        return this.matrix[x][y];
+    }
+
+    public int getSumOfNeighbours(int x, int y) {
+        ArrayDeque<Integer> sums=new ArrayDeque<>();
+        sums.add(Left(x, y));
+        sums.add(Right(x, y));
+        sums.add(TopLeft(x, y));
+        sums.add(TopRight(x, y));
+        sums.add(Top(x, y));
+        sums.add(BottomRight(x, y));
+        sums.add(BottomLeft(x, y));
+        sums.add(Bottom(x, y));
+
+        int total=0;
+        for (int sum:sums) {
+        total+=sum;
+        }
+        return total;
+    }
+
+    private int Bottom(int x, int y) {
+        try {
+            return matrix[x+1][y];
+        } catch (IndexOutOfBoundsException exc) {
+            return 0;
+        }
+    }
+
+    private int BottomLeft(int x, int y) {
+        try {
+            return matrix[x+1][y-1];
+        } catch (IndexOutOfBoundsException exc) {
+            return 0;
+        }
+    }
+
+    private int BottomRight(int x, int y) {
+        try {
+            return matrix[x+1][y+1];
+        } catch (IndexOutOfBoundsException exc) {
+            return 0;
+        }
+    }
+
+    private int Top(int x, int y) {
+        try {
+            return matrix[x-1][y];
+        } catch (IndexOutOfBoundsException exc) {
+            return 0;
+        }
+    }
+
+    private int TopRight(int x, int y) {
+        try {
+            return matrix[x-1][y+1];
+        } catch (IndexOutOfBoundsException exc) {
+            return 0;
+        }
+    }
+
+    private int TopLeft(int x, int y) {
+        try {
+            return matrix[x-1][y-1];
+        } catch (IndexOutOfBoundsException exc) {
+            return 0;
+        }
+    }
+
+    private int Right(int x, int y) {
+        try {
+            return matrix[x][y+1];
+        } catch (IndexOutOfBoundsException exc) {
+            return 0;
+        }
+    }
+
+    private int Left(int x, int y) {
+        try {
+            return matrix[x][y-1];
+        } catch (IndexOutOfBoundsException exc) {
+            return 0;
+        }
+    }
+
+
+
+    public boolean isGreen(int cell) {
+        return cell == 1;
+    }
+
+    public boolean isRed(int cell) {
+        return cell == 0;
+    }
+
+    @Override
+    public String toString() {
+        System.out.println();
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j <matrix[i].length ; j++) {
+                System.out.print(matrix[i][j]+ " ");
+            }
+            System.out.println();
+        }
+        System.out.print("Matrix " +
+                "row = "+row+",col ="+col);
+        return "";
+
+    }
+
+    public int getRow() {
+        return this.row;
+    }
+
+    public int getCol() {
+        return this.col;
+    }
+
+    public int[][] getMatrix() {
+        return matrix;
+    }
+}
